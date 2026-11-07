@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MGDL</title>
+    <!-- Importing the Among Us Style Font via Google Fonts -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Fredoka:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-black: #0a0505;
+            --card-gray: #160b0b;
+            --neon-red: #ff1f1f;
+            --dark-red: #8b0000;
+            --text-white: #f5f5f5;
+            --text-muted: #a08080;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Fredoka', system-ui, -apple-system, sans-serif;
+            letter-spacing: 1px;
+            line-height: 1.6;
+        }
+
+        /* Among Us Font Text Stroke Effect */
+        .among-us-font {
+            text-transform: uppercase;
+            -webkit-text-stroke: 2px #000;
+            text-shadow: 3px 3px 0px #000;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--card-gray);
+            border-bottom: 3px solid var(--dark-red);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            color: var(--neon-red);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-white);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-red);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 5rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, #200505 0%, var(--bg-black) 100%);
+            border-bottom: 2px solid #200d0d;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: var(--neon-red);
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Layout Content */
+        .container {
+            max-width: 1100px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Section Styling */
+        section {
+            background-color: var(--card-gray);
+            border: 3px solid var(--dark-red);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--neon-red);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--dark-red);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Demonlist Cards */
+        .list-item {
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 2px solid #301010;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .list-item:hover {
+            transform: scale(1.01);
+            border-color: var(--neon-red);
+        }
+
+        .rank {
+            font-size: 2.2rem;
+            color: var(--neon-red);
+            min-width: 50px;
+        }
+
+        .level-info {
+            flex-grow: 1;
+        }
+
+        .level-name {
+            font-size: 1.4rem;
+            color: var(--text-white);
+            margin-bottom: 0.2rem;
+        }
+
+        .level-creator {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .points {
+            font-size: 1.1rem;
+            color: var(--neon-red);
+            background-color: #2a0808;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            border: 1px solid var(--dark-red);
+        }
+
+        /* Leaderboard Styling */
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #301010;
+        }
+
+        .player-name {
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 2px solid #200d0d;
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="logo among-us-font">MDL</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#list">Demonlist</a></li>
+            <li><a href="#unrated">Unrated</a></li>
+            <li><a href="#players">Players</a></li>
+            <li><a href="#community">Community</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero" id="home">
+        <h1 class="among-us-font">Maldives Demonlist</h1>
+        <p>Tracking the absolute hardest Geometry Dash completions across the Maldives.</p>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Demonlist Section -->
+        <main>
+            <section id="list">
+                <h2 class="among-us-font">Top Ranked Demons</h2>
+                
+                <!-- Level 1 -->
+                <div class="list-item">
+                    <div class="rank among-us-font">#1</div>
+                    <div class="level-info">
+                        <div class="level-name">Acheron</div>
+                        <div class="level-creator">Created by <span>Riot & more</span></div>
+                    </div>
+                    <div class="points">250.0 pts</div>
+                </div>
+
+                <!-- Level 2 -->
+                <div class="list-item">
+                    <div class="rank among-us-font">#2</div>
+                    <div class="level-info">
+                        <div class="level-name">Slaughterhouse</div>
+                        <div class="level-creator">Created by <span>IcedCave</span></div>
+                    </div>
+                    <div class="points">240.5 pts</div>
+                </div>
+
+                <!-- Level 3 -->
+                <div class="list-item">
+                    <div class="rank among-us-font">#3</div>
+                    <div class="level-info">
+                        <div class="level-name">Tartarus</div>
+                        <div class="level-creator">Created by <span>Riot</span></div>
+                    </div>
+                    <div class="points">230.0 pts</div>
+                </div>
+
+            </section>
+        </main>
+
+        <!-- Sidebar / Leaderboard -->
+        <aside>
+            <section id="players">
+                <h2 class="among-us-font">Top Players</h2>
+                
+                <div class="leaderboard-item">
+                    <span class="player-name">1. PlayerOne</span>
+                    <span class="points">500 pts</span>
+                </div>
+
+                <div class="leaderboard-item">
+                    <span class="player-name">2. PlayerTwo</span>
+                    <span class="points">420 pts</span>
+                </div>
+            </section>
+        </aside>
+
+    </div>
+
+    <footer>
+        <p>MV Demonlist.</p>
+    </footer>
+
+</body>
+</html>
