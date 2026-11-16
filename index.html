@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10070b">
+  <meta name="description" content="MGDL — Maldivian Geometry Dash List. A community-style hardest-to-easiest level leaderboard.">
+  <title>MGDL — Maldivian Geometry Dash List</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="MGDL home">
+      <span class="brand-mark">M</span>
+      <span class="brand-copy"><strong>MGDL</strong><small>MALDIVIAN GEOMETRY DASH LIST</small></span>
+    </a>
+    <nav class="header-nav" aria-label="Main navigation">
+      <a class="nav-link active" href="#leaderboard">Leaderboard</a>
+      <a class="nav-link" href="#about">About</a>
+    </nav>
+    <span class="edition-pill"><span class="pulse-dot"></span> SNAPS' VERSION</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> THE MALDIVIAN COMMUNITY LIST</p>
+        <h1>THE <span>MGDL</span><br>LEADERBOARD</h1>
+        <p class="hero-description">The hardest Geometry Dash levels, ranked down to the easiest. One list. Fifty placements. Built for the community.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#leaderboard">View rankings <span aria-hidden="true">↘</span></a>
+          <button class="button button-quiet" id="copy-all" type="button">Copy level list <span aria-hidden="true">▣</span></button>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Abstract crimson geometric artwork">
+        <div class="art-ring ring-one"></div><div class="art-ring ring-two"></div>
+        <div class="art-diamond"></div><div class="art-core"></div>
+        <span class="art-label art-label-top">MD / 001</span>
+        <span class="art-label art-label-bottom">HARDER · FASTER · HIGHER</span>
+      </div>
+      <div class="hero-stats">
+        <div><strong id="ranked-count">34</strong><span>RANKED LEVELS</span></div>
+        <div><strong>50</strong><span>TOTAL PLACEMENTS</span></div>
+        <div><strong>01—50</strong><span>HARDEST TO EASIEST</span></div>
+      </div>
+    </section>
+
+    <section class="leaderboard-section" id="leaderboard">
+      <div class="section-heading">
+        <div><p class="eyebrow">OFFICIAL RANKINGS</p><h2>THE <span>LIST</span></h2></div>
+        <span class="sort-note">HARDEST <b>→</b> EASIEST</span>
+      </div>
+      <div class="list-toolbar">
+        <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search a level..." autocomplete="off" aria-label="Search levels"><kbd>/</kbd></label>
+        <div class="toolbar-meta"><span class="live-indicator"></span><span id="result-count">34 ranked levels</span></div>
+      </div>
+      <div class="podium" id="podium" aria-label="Top three ranked levels"></div>
+      <div class="list-header"><span>RANK</span><span>LEVEL</span><span class="list-status">STATUS</span></div>
+      <ol class="ranking-list" id="ranking-list" aria-label="MGDL level rankings"></ol>
+      <p class="empty-state" id="empty-state" hidden>No levels match that search.</p>
+      <div class="list-footer"><span>MGDL · SNAPS' VERSION</span><span>50 PLACEMENTS RESERVED</span></div>
+    </section>
+
+    <section class="about-section" id="about">
+      <div class="about-symbol">MG<span>DL</span></div>
+      <div><p class="eyebrow">ABOUT THIS PROJECT</p><h2>MADE FOR THE <span>MALDIVIAN</span> GD COMMUNITY.</h2>
+      <p>MGDL stands for Maldivian Geometry Dash List. This is Snaps' version of a hardest-to-easiest level ranking list. The first 34 placements are populated; the remaining 16 are reserved for future additions.</p></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a class="footer-brand" href="#">MGDL<span> / V3.0</span></a><span>UNOFFICIAL COMMUNITY PROJECT · NOT AFFILIATED WITH ROBTOP GAMES</span><a href="#leaderboard">BACK TO TOP ↑</a></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
