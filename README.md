@@ -1,14 +1,11 @@
 # MGDL - Maldivian Geometry Dash List (v3.0)
 
-A responsive, static leaderboard for Snaps version of the Maldivian Geometry Dash List.
+A leaderboard for Snaps version of the Maldivian Geometry Dash List.
 
 # Included
-- 50 reserved placements
-- 34 submitted levels, kept in the exact order provided
+- 50 placements
+- 34 submitted levels
 - 16 open placements for future additions
-- Crimson / near-black responsive UI
-- Search, top-three feature cards, and copy-ranking button
-- Keyboard shortcut `/` to focus search; `Esc` clears it
 - Reduced-motion accessibility support
 - No backend, build step, or dependencies required
 
@@ -35,4 +32,4 @@ Open `script.js` and edit the `rankedLevels` array near the top. Keep the array 
 The page currently displays 34 named levels and 16 reserved slots. Add names to the array to fill those slots. The display capacity is controlled by `totalPlacements` in `script.js`.
 
 ## iPhone / iPad
-The layout is responsive and designed to work in Safari on iOS. GitHub Pages serves it over HTTPS. No installation is needed; visitors can open the published URL in Safari and optionally use **Share → Add to Home Screen**.
+The layout is responsive and designed to work in Safari on iOS, because I’m iOS lol. GitHub Pages serves it over HTTPS. No installation is needed; visitors can open the published URL in Safari and optionally use **Share → Add to Home Screen**.
