@@ -1,8 +1,8 @@
-# MGDL — Maldivian Geometry Dash List (v3.0)
+# MGDL - Maldivian Geometry Dash List (v3.0)
 
-A responsive, static leaderboard for Snaps' version of the Maldivian Geometry Dash List.
+A responsive, static leaderboard for Snaps version of the Maldivian Geometry Dash List.
 
-## Included
+# Included
 - 50 reserved placements
 - 34 submitted levels, kept in the exact order provided
 - 16 open placements for future additions
