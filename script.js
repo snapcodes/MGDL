@@ -1,4 +1,4 @@
-console.log("MGDL script started");
+
 const rankedLevels = [
   'Firework','Unknown','Kenos','Zodiac','BloodLust','Shardscapes','Arctic Lights','Wasureta',
   'Sonic Wave','Golden Club','Yatagarasu','Athanatos','Bloodbath','Cataclysm','Sweater Weather',
