@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root{color-scheme:dark;--bg:#0b0709;--panel:#140b0f;--panel2:#1b0d13;--line:#3c1723;--red:#f02d4f;--red2:#a91434;--text:#f8edf0;--muted:#9b858c;--gold:#f4c66a;--silver:#c7cbd2;--bronze:#c88d69}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;overflow-x:hidden}a{color:inherit;text-decoration:none}button,input{font:inherit}.ambient{position:fixed;z-index:-1;pointer-events:none;border-radius:50%;filter:blur(90px);opacity:.16}.ambient-one{width:440px;height:440px;background:#b20e37;top:80px;left:-250px}.ambient-two{width:420px;height:420px;background:#67102a;right:-250px;top:900px}
 .site-header{height:78px;max-width:1180px;margin:auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(240,45,79,.18)}.brand{display:flex;align-items:center;gap:11px}.brand-mark{width:38px;height:38px;display:grid;place-items:center;background:linear-gradient(145deg,#ff4564,#9d0d2e);border-radius:11px;font:900 25px 'Barlow Condensed';box-shadow:0 0 24px #f02d4f42}.brand-copy{display:flex;flex-direction:column;gap:2px}.brand-copy strong{font:900 22px 'Barlow Condensed';letter-spacing:1.5px}.brand-copy small{font-size:8px;letter-spacing:1.4px;color:var(--muted)}.header-nav{display:flex;gap:28px}.nav-link{font-size:12px;color:var(--muted);transition:color .2s}.nav-link:hover,.nav-link.active{color:#fff}.edition-pill{border:1px solid var(--line);background:#170b10;padding:8px 11px;border-radius:30px;font-size:9px;letter-spacing:1.2px;color:#d9b9c2}.pulse-dot,.live-indicator{display:inline-block;width:6px;height:6px;background:#ff3857;border-radius:50%;margin-right:7px;box-shadow:0 0 10px #ff3857;animation:pulse 1.8s infinite}
@@ -43,4 +43,51 @@ main{max-width:1124px;margin:auto;padding:0 28px}.hero{position:relative;min-hei
 .hero {
   padding-top: 70px;
   padding-bottom: 70px;
+}
+
+
+/* MGDL V4 additions — existing styles and copy retained */
+.account-button{margin-left:auto;margin-right:20px;background:#190b11;border:1px solid #633044;color:#fff;border-radius:8px;padding:10px 14px;font-size:11px;font-weight:800;cursor:pointer}
+.header-nav{align-items:center}
+.players-section{padding:55px 0 70px;border-top:1px solid #29111a}
+.players-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:18px 0}
+.players-intro{color:var(--muted);font-size:12px;line-height:1.7}
+.player-table-wrap{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#12090d}
+.player-table-head,.player-row{display:grid;grid-template-columns:1fr 110px 130px;gap:12px;align-items:center;padding:14px 17px}
+.player-table-head{font-size:8px;letter-spacing:1.5px;color:#927b84;border-bottom:1px solid var(--line)}
+.player-row{font-size:12px;border-bottom:1px solid #2b141d}
+.player-row:last-child{border-bottom:0}
+.player-row strong{color:#f6e8ed}
+.player-row span:not(:first-child){font-variant-numeric:tabular-nums;color:#e8b6c3}
+.level-link{display:flex;align-items:center;gap:12px;width:100%;color:inherit;text-align:left;background:transparent;border:0;cursor:pointer;font:inherit}
+.level-link:hover .rank-name{color:#ff718b}
+.level-thumb{width:72px;height:42px;flex:none;object-fit:cover;border-radius:5px;background:#260d18;border:1px solid #542033}
+.rank-row{grid-template-columns:55px minmax(0,1fr) 88px}
+.rank-name{line-height:1.4}
+.modal-backdrop[hidden]{display:none}
+.modal-backdrop{position:fixed;inset:0;z-index:30;background:#050205d9;display:grid;place-items:center;padding:18px}
+.account-modal{position:relative;width:min(440px,100%);max-height:90vh;overflow:auto;padding:28px;border:1px solid #63243a;border-radius:14px;background:linear-gradient(145deg,#211017,#10090d);box-shadow:0 20px 80px #000b}
+.account-modal h2{font:900 36px 'Barlow Condensed';margin:0 0 20px}
+.modal-close{position:absolute;right:16px;top:12px;background:none;border:0;color:#d8bac4;font-size:28px;cursor:pointer}
+.account-modal form,.account-modal label{display:flex;flex-direction:column;gap:8px}
+.account-modal form{gap:15px}
+.account-modal label{font-size:11px;color:#d8c4cb}
+.account-modal input,.account-modal select,.account-modal textarea{width:100%;padding:12px;border:1px solid #512335;border-radius:7px;background:#0d080b;color:#fff;font:inherit}
+.auth-tabs{display:flex;gap:8px;margin-bottom:18px}
+.auth-tab,.google-button{padding:11px;border:1px solid #542337;border-radius:7px;background:#160b10;color:#fff;cursor:pointer}
+.auth-tab.active{border-color:var(--red);color:#ff8095}
+.modal-submit,.google-button{width:100%;margin-top:4px}
+.google-button{margin-top:12px}
+.modal-note{font-size:10px;line-height:1.7;color:var(--muted);margin:15px 0 0}
+@media(max-width:700px){
+ .site-header{gap:10px;flex-wrap:wrap;height:auto;min-height:68px;padding:12px 17px}
+ .account-button{order:2;margin:0 0 0 auto}
+ .header-nav{display:flex;order:3;width:100%;justify-content:center;gap:22px;padding:8px 0 2px}
+ .edition-pill{display:none}
+ .players-section{padding:42px 0 50px}
+ .players-toolbar{align-items:flex-start;flex-direction:column}
+ .player-table-head,.player-row{grid-template-columns:minmax(0,1fr) 65px 90px;padding:12px;font-size:10px}
+ .level-thumb{width:58px;height:36px}
+ .rank-row{grid-template-columns:42px minmax(0,1fr) 68px;padding:8px}
+ .rank-tag{font-size:7px}
 }
