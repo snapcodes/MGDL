@@ -1,162 +1,206 @@
 
 /* =========================================
-   MGDL PROFILE EDITOR
+   MGDL PUBLIC PROFILE SYSTEM
    ========================================= */
 
-.profile-editor {
+.mgdl-player-search {
   width: min(680px, 100%);
   margin: 30px auto;
-  padding: 24px;
-  background: #15151d;
-  border: 1px solid #34303b;
-  border-radius: 18px;
-  color: #fff;
-  font-family: inherit;
+  padding: 22px;
+  box-sizing: border-box;
+  background: #211018;
+  border: 1px solid #70243b;
+  border-radius: 16px;
+  color: white;
 }
 
-.profile-editor h2 {
+.mgdl-player-search h2 {
   margin: 0 0 8px;
-  font-size: 25px;
+  font-size: 22px;
+}
+
+.mgdl-player-search p {
+  color: #d1aab5;
+}
+
+#mgdl-search-form {
+  display: flex;
+  gap: 9px;
+}
+
+#mgdl-player-search {
+  min-width: 0;
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #84344d;
+  border-radius: 9px;
+  background: #160a10;
+  color: white;
+}
+
+#mgdl-search-form button,
+.mgdl-search-result {
+  cursor: pointer;
+}
+
+#mgdl-search-form button {
+  padding: 12px 17px;
+  border: 0;
+  border-radius: 9px;
+  background: #c51e48;
+  color: white;
   font-weight: 800;
 }
 
-.profile-editor .profile-description {
-  color: #aaa5b1;
-  font-size: 14px;
-  margin-bottom: 24px;
+#mgdl-search-results {
+  display: grid;
+  gap: 9px;
+  margin-top: 15px;
 }
 
-.profile-editor label {
-  display: block;
-  margin: 18px 0 8px;
-  color: #e8e3ec;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.profile-editor input[type="text"],
-.profile-editor input[type="url"] {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 13px 14px;
-  border: 1px solid #393440;
+.mgdl-search-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px;
+  text-align: left;
+  border: 1px solid #63263b;
   border-radius: 10px;
-  outline: none;
-  background: #0d0d13;
-  color: #fff;
-  font: inherit;
-  transition: border-color .2s, box-shadow .2s;
+  background: #30121f;
+  color: white;
 }
 
-.profile-editor input:focus {
-  border-color: #f02d4f;
-  box-shadow: 0 0 0 3px #f02d4f22;
-}
-
-.profile-editor input[type="file"] {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 12px;
-  border: 1px dashed #51404a;
-  border-radius: 10px;
-  background: #0d0d13;
-  color: #bcb6c3;
-}
-
-.profile-editor .profile-preview {
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 5;
-  margin: 14px 0;
-  border: 1px solid #393440;
-  border-radius: 12px;
-  background: #24212b;
-}
-
-.profile-editor .profile-preview img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.profile-editor .avatar-preview {
-  width: 104px;
-  height: 104px;
-  overflow: hidden;
-  margin: 12px 0;
-  border: 3px solid #f02d4f;
+.mgdl-search-result img {
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: #24212b;
-}
-
-.profile-editor .avatar-preview img {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
 }
 
-.profile-editor .profile-save {
-  display: block;
-  width: 100%;
-  margin-top: 24px;
-  padding: 14px 18px;
-  border: 1px solid #f02d4f;
-  border-radius: 10px;
-  background: linear-gradient(110deg, #fa3457, #b40e35);
-  color: #fff;
-  font: inherit;
+.mgdl-search-result span {
+  display: grid;
+  gap: 4px;
+}
+
+.mgdl-search-result small {
+  color: #d1aab5;
+}
+
+.mgdl-bio-counter {
+  margin: 6px 0;
+  color: #d1aab5;
+  font-size: 12px;
+  text-align: right;
+}
+
+.mgdl-profile-viewer {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  overflow-y: auto;
+  padding: 24px;
+  box-sizing: border-box;
+  background: rgba(12, 3, 8, .96);
+  color: white;
+}
+
+.mgdl-profile-viewer[hidden] {
+  display: none;
+}
+
+.mgdl-viewer-top {
+  width: min(850px, 100%);
+  margin: 0 auto 15px;
+  text-align: right;
+}
+
+.mgdl-viewer-close {
+  padding: 11px 17px;
+  border: 1px solid #a92a4b;
+  border-radius: 9px;
+  background: #36101f;
+  color: white;
   font-weight: 800;
   cursor: pointer;
-  transition: transform .2s, box-shadow .2s;
 }
 
-.profile-editor .profile-save:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px #f02d4f45;
+.mgdl-viewer-banner {
+  width: min(850px, 100%);
+  height: 260px;
+  margin: 0 auto;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(120deg, #8f1236, #ed315b, #3b0b20);
+  background-position: center;
+  background-size: cover;
 }
 
-.profile-editor .profile-save:disabled {
-  opacity: .55;
-  cursor: not-allowed;
-  transform: none;
+.mgdl-viewer-details {
+  position: relative;
+  width: min(850px, 100%);
+  min-height: 210px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 78px 28px 28px;
+  border: 1px solid #71233d;
+  border-top: 0;
+  border-radius: 0 0 16px 16px;
+  background: #241019;
 }
 
-.profile-editor .profile-status {
-  min-height: 20px;
-  margin-top: 14px;
-  color: #bcb6c3;
-  font-size: 13px;
-  text-align: center;
+.mgdl-viewer-avatar {
+  position: absolute;
+  top: -65px;
+  left: 25px;
+  width: 125px;
+  height: 125px;
+  box-sizing: border-box;
+  border: 6px solid #241019;
+  border-radius: 50%;
+  background: #54152b;
+  object-fit: cover;
 }
 
-.profile-editor .profile-status.error {
-  color: #ff637c;
+.mgdl-viewer-username {
+  margin: 0 0 12px;
+  font-size: 28px;
+  overflow-wrap: anywhere;
 }
 
-.profile-editor .profile-status.success {
-  color: #6ee7a0;
+.mgdl-viewer-bio {
+  color: #f0cbd5;
+  font-size: 15px;
+  overflow-wrap: anywhere;
 }
 
-.profile-editor .file-hint {
-  margin-top: 7px;
-  color: #8e8996;
-  font-size: 12px;
-  line-height: 1.5;
+.mgdl-viewer-joined {
+  margin-top: 25px;
+  color: #d34a6b;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
 }
 
 @media (max-width: 600px) {
-  .profile-editor {
-    padding: 17px;
-    border-radius: 14px;
+  .mgdl-viewer-banner {
+    height: 175px;
   }
 
-  .profile-editor h2 {
-    font-size: 22px;
+  .mgdl-viewer-details {
+    padding: 75px 18px 24px;
   }
 
-  .profile-editor .profile-preview {
-    aspect-ratio: 16 / 6;
+  .mgdl-viewer-avatar {
+    width: 105px;
+    height: 105px;
+    top: -55px;
+  }
+
+  .mgdl-viewer-username {
+    font-size: 23px;
+  }
+
+  #mgdl-search-form {
+    flex-direction: column;
   }
 }
+
