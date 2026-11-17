@@ -15,7 +15,6 @@ const resultCount = document.getElementById("result-count");
 const emptyState = document.getElementById("empty-state");
 const toast = document.getElementById("toast");
 
-// Direct YouTube video links for ranked levels.
 const levelVideos = {
   "Firework": "https://www.youtube.com/watch?v=QBe5x2o9v2w",
   "Unknown": "https://www.youtube.com/watch?v=WqnY045n88E",
@@ -55,7 +54,15 @@ const levelVideos = {
 
 const youtubeSearch = name => levelVideos[name] || null;
 
-const levelPoints = rank => Math.round(300 - ((rank - 1) * (290 / 33)));
+const MGDL_levelPoints = new Map();
+
+const levelPoints = rank => {
+  const name = rankedLevels[rank - 1];
+
+  return MGDL_levelPoints.has(name)
+    ? MGDL_levelPoints.get(name)
+    : Math.round(300 - ((rank - 1) * (290 / 33)));
+};
 
 document.getElementById("ranked-count").textContent = rankedLevels.length;
 
@@ -112,7 +119,7 @@ function renderList(query = "") {
 }
 
 function escapeHTML(value) {
-  return value.replace(/[&<>"']/g, char => ({
+  return String(value).replace(/[&<>"']/g, char => ({
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
@@ -167,6 +174,50 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
+
+/* DATABASE RANKING INTEGRATION */
+
+async function MGDL_reloadRankedLevels() {
+  const { data, error } = await supabaseClient
+    .from("ranked_levels")
+    .select("rank, name, mv_points")
+    .order("rank", { ascending: true });
+
+  if (error) {
+    console.error("MGDL ranked levels:", error.message);
+    showToast("Could not load database rankings.");
+    return;
+  }
+
+  if (!Array.isArray(data)) return;
+
+  rankedLevels.splice(
+    0,
+    rankedLevels.length,
+    ...data.map(level => level.name)
+  );
+
+  MGDL_levelPoints.clear();
+
+  data.forEach(level => {
+    MGDL_levelPoints.set(level.name, Number(level.mv_points));
+  });
+
+  document.getElementById("ranked-count").textContent = rankedLevels.length;
+
+  const levelSelect = document.getElementById("record-level");
+
+  if (levelSelect) {
+    levelSelect.innerHTML = rankedLevels.map(name =>
+      `<option value="${escapeHTML(name)}">${escapeHTML(name)}</option>`
+    ).join("");
+  }
+
+  renderPodium();
+  renderList(search.value);
+}
+
+window.MGDL_reloadRankedLevels = MGDL_reloadRankedLevels;
 
 const authModal = document.getElementById("auth-modal");
 const recordModal = document.getElementById("record-modal");
@@ -336,7 +387,7 @@ supabaseClient.auth.getSession().then(({ data, error }) => {
   updateAccountButton(data?.session || null);
 });
 
-/* Record submission remains inactive until its database schema and RLS policies are verified. */
+/* Existing record submission placeholder */
 
 document.getElementById("record-form").addEventListener("submit", event => {
   event.preventDefault();
@@ -351,4 +402,6 @@ levelSelect.innerHTML = rankedLevels.map(name =>
 
 renderPodium();
 renderList();
+
+MGDL_reloadRankedLevels();
 
