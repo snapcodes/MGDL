@@ -1,7 +1,7 @@
 
 /* =========================================
-   MGDL PROFILE EDITOR
-   Supports private avatar and animated GIF banners
+   MGDL PROFILE SYSTEM
+   Editing, public profiles and player search
    ========================================= */
 
 (() => {
@@ -27,15 +27,48 @@
 
     if (!accountButton || !aboutSection) return;
 
-    // Add the profile button.
+    // Profile action buttons
     const profileButton = document.createElement("button");
     profileButton.type = "button";
-    profileButton.textContent = "Edit profile";
+    profileButton.textContent = "Edit Profile";
     profileButton.className = "account-button";
     profileButton.hidden = true;
-    accountButton.insertAdjacentElement("afterend", profileButton);
 
-    // Build the profile editor.
+    const viewButton = document.createElement("button");
+    viewButton.type = "button";
+    viewButton.textContent = "View Profile";
+    viewButton.className = "account-button";
+    viewButton.hidden = true;
+
+    accountButton.insertAdjacentElement("afterend", profileButton);
+    profileButton.insertAdjacentElement("afterend", viewButton);
+
+    // Public player search
+    const searchSection = document.createElement("section");
+    searchSection.className = "mgdl-player-search";
+    searchSection.innerHTML = `
+      <h2>FIND PLAYERS</h2>
+      <p>Search for MGDL players by username.</p>
+      <form id="mgdl-search-form">
+        <input
+          id="mgdl-player-search"
+          type="search"
+          maxlength="20"
+          placeholder="Search usernames..."
+          autocomplete="off"
+        >
+        <button type="submit">SEARCH</button>
+      </form>
+      <div id="mgdl-search-results" aria-live="polite"></div>
+    `;
+
+    aboutSection.insertAdjacentElement("beforebegin", searchSection);
+
+    const searchForm = searchSection.querySelector("#mgdl-search-form");
+    const searchInput = searchSection.querySelector("#mgdl-player-search");
+    const searchResults = searchSection.querySelector("#mgdl-search-results");
+
+    // Profile editor
     const editor = document.createElement("section");
     editor.className = "profile-editor";
     editor.hidden = true;
@@ -56,8 +89,17 @@
           maxlength="20"
           required
           autocomplete="nickname"
-          placeholder="Your username"
+          placeholder="Your unique username"
         >
+
+        <label for="mgdl-bio">Bio</label>
+        <input
+          id="mgdl-bio"
+          type="text"
+          maxlength="30"
+          placeholder="Tell players about yourself..."
+        >
+        <p class="mgdl-bio-counter">0/30 characters</p>
 
         <label>Profile picture</label>
         <div class="avatar-preview">
@@ -68,9 +110,7 @@
           type="file"
           accept="image/png,image/jpeg,image/webp,image/gif"
         >
-        <p class="file-hint">
-          PNG, JPG, WebP or GIF. Maximum 8 MB.
-        </p>
+        <p class="file-hint">PNG, JPG, WebP or GIF. Maximum 8 MB.</p>
 
         <label>Profile banner</label>
         <div class="profile-preview">
@@ -81,9 +121,7 @@
           type="file"
           accept="image/png,image/jpeg,image/webp,image/gif"
         >
-        <p class="file-hint">
-          Animated GIFs are supported. Maximum 8 MB.
-        </p>
+        <p class="file-hint">Animated GIFs supported. Maximum 8 MB.</p>
 
         <button class="profile-save" type="submit">
           SAVE PROFILE
@@ -98,6 +136,8 @@
 
     const form = editor.querySelector("#mgdl-profile-form");
     const usernameInput = editor.querySelector("#mgdl-username");
+    const bioInput = editor.querySelector("#mgdl-bio");
+    const bioCounter = editor.querySelector(".mgdl-bio-counter");
     const avatarInput = editor.querySelector("#mgdl-avatar-file");
     const bannerInput = editor.querySelector("#mgdl-banner-file");
     const avatarPreview = editor.querySelector("#mgdl-avatar-preview");
@@ -114,28 +154,36 @@
       status.className = "profile-status " + type;
     }
 
+    function updateBioCounter() {
+      const length = Array.from(bioInput.value).length;
+      bioCounter.textContent = `${length}/30 characters`;
+    }
+
+    bioInput.addEventListener("input", updateBioCounter);
+
     function setBusy(busy) {
       saveButton.disabled = busy;
       saveButton.textContent = busy ? "SAVING..." : "SAVE PROFILE";
     }
 
-    async function getImageUrl(path) {
+    // Public bucket URLs
+    function getImageUrl(path) {
       if (!path) return null;
 
-      // Support an existing external image URL.
       if (/^https?:\/\//i.test(path)) return path;
 
-      const { data, error } = await supabaseClient.storage
+      const { data } = supabaseClient.storage
         .from(BUCKET)
-        .createSignedUrl(path, 3600);
+        .getPublicUrl(path);
 
-      if (error) throw error;
-      return data.signedUrl;
+      return data.publicUrl;
     }
 
     async function loadProfile(session) {
       currentUser = session?.user || null;
+
       profileButton.hidden = !currentUser;
+      viewButton.hidden = !currentUser;
 
       if (!currentUser) {
         editor.hidden = true;
@@ -144,43 +192,34 @@
 
       const { data, error } = await supabaseClient
         .from("profiles")
-        .select("username, avatar_url, banner_url")
+        .select("username, bio, avatar_url, banner_url")
         .eq("id", currentUser.id)
         .maybeSingle();
 
       if (error) {
-        setStatus("Could not load your profile: " + error.message, "error");
+        setStatus("Could not load profile: " + error.message, "error");
         return;
       }
 
       if (!data) {
-        setStatus(
-          "Your profile hasn't been created yet. Please contact an MGDL developer.",
-          "error"
-        );
+        setStatus("Your profile has not been created yet.", "error");
         return;
       }
 
       usernameInput.value = data.username || "";
+      bioInput.value = data.bio || "";
+      updateBioCounter();
 
       savedAvatarPath = data.avatar_url || null;
       savedBannerPath = data.banner_url || null;
 
-      try {
-        avatarPreview.src =
-          await getImageUrl(savedAvatarPath) || DEFAULT_AVATAR;
+      avatarPreview.src =
+        getImageUrl(savedAvatarPath) || DEFAULT_AVATAR;
 
-        const bannerUrl = await getImageUrl(savedBannerPath);
+      const bannerUrl = getImageUrl(savedBannerPath);
+      bannerPreview.hidden = !bannerUrl;
 
-        bannerPreview.hidden = !bannerUrl;
-
-        if (bannerUrl) {
-          bannerPreview.src = bannerUrl;
-        }
-      } catch (error) {
-        console.error("MGDL profile image error:", error);
-        setStatus("Could not load your profile images.", "error");
-      }
+      if (bannerUrl) bannerPreview.src = bannerUrl;
     }
 
     function previewFile(input, preview, fallback = null) {
@@ -232,10 +271,9 @@
         "image/gif": "gif"
       };
 
-      const extension = extensions[file.type];
       const path =
         currentUser.id + "/" + folder + "-" +
-        Date.now() + "." + extension;
+        Date.now() + "." + extensions[file.type];
 
       const { error } = await supabaseClient.storage
         .from(BUCKET)
@@ -250,6 +288,7 @@
       return path;
     }
 
+    // Save profile
     form.addEventListener("submit", async event => {
       event.preventDefault();
 
@@ -259,9 +298,15 @@
       }
 
       const username = usernameInput.value.trim();
+      const bio = bioInput.value.trim();
 
       if (username.length < 3 || username.length > 20) {
         setStatus("Username must be 3–20 characters.", "error");
+        return;
+      }
+
+      if (Array.from(bio).length > 30) {
+        setStatus("Your bio must be 30 characters or less.", "error");
         return;
       }
 
@@ -272,27 +317,32 @@
         let avatarPath = savedAvatarPath;
         let bannerPath = savedBannerPath;
 
-        const avatarFile = avatarInput.files?.[0];
-        const bannerFile = bannerInput.files?.[0];
-
-        if (avatarFile) {
-          avatarPath = await uploadImage(avatarFile, "avatar");
+        if (avatarInput.files?.[0]) {
+          avatarPath = await uploadImage(avatarInput.files[0], "avatar");
         }
 
-        if (bannerFile) {
-          bannerPath = await uploadImage(bannerFile, "banner");
+        if (bannerInput.files?.[0]) {
+          bannerPath = await uploadImage(bannerInput.files[0], "banner");
         }
 
         const { error } = await supabaseClient
           .from("profiles")
           .update({
-            username: username,
+            username,
+            bio,
             avatar_url: avatarPath,
             banner_url: bannerPath
           })
           .eq("id", currentUser.id);
 
-        if (error) throw error;
+        if (error) {
+          if (error.code === "23505") {
+            throw new Error(
+              "That username is already taken. Try another one."
+            );
+          }
+          throw error;
+        }
 
         savedAvatarPath = avatarPath;
         savedBannerPath = bannerPath;
@@ -301,9 +351,9 @@
         bannerInput.value = "";
 
         avatarPreview.src =
-          await getImageUrl(savedAvatarPath) || DEFAULT_AVATAR;
+          getImageUrl(savedAvatarPath) || DEFAULT_AVATAR;
 
-        const bannerUrl = await getImageUrl(savedBannerPath);
+        const bannerUrl = getImageUrl(savedBannerPath);
         bannerPreview.hidden = !bannerUrl;
 
         if (bannerUrl) bannerPreview.src = bannerUrl;
@@ -313,7 +363,6 @@
         if (typeof showToast === "function") {
           showToast("Profile updated!");
         }
-
       } catch (error) {
         console.error("MGDL profile save error:", error);
         setStatus(error.message || "Could not save profile.", "error");
@@ -322,6 +371,148 @@
       }
     });
 
+    // Profile viewer
+    const viewer = document.createElement("section");
+    viewer.className = "mgdl-profile-viewer";
+    viewer.hidden = true;
+
+    viewer.innerHTML = `
+      <div class="mgdl-viewer-top">
+        <button type="button" class="mgdl-viewer-close">✕ CLOSE</button>
+      </div>
+      <div class="mgdl-viewer-banner"></div>
+      <div class="mgdl-viewer-details">
+        <img class="mgdl-viewer-avatar" alt="Player avatar">
+        <h2 class="mgdl-viewer-username"></h2>
+        <p class="mgdl-viewer-bio"></p>
+        <p class="mgdl-viewer-joined">MGDL PLAYER</p>
+      </div>
+    `;
+
+    document.body.appendChild(viewer);
+
+    const viewerBanner = viewer.querySelector(".mgdl-viewer-banner");
+    const viewerAvatar = viewer.querySelector(".mgdl-viewer-avatar");
+    const viewerUsername = viewer.querySelector(".mgdl-viewer-username");
+    const viewerBio = viewer.querySelector(".mgdl-viewer-bio");
+
+    function closeViewer() {
+      viewer.hidden = true;
+    }
+
+    viewer.querySelector(".mgdl-viewer-close")
+      .addEventListener("click", closeViewer);
+
+    async function showPublicProfile(profile) {
+      if (!profile) return;
+
+      viewerUsername.textContent = profile.username || "MGDL Player";
+      viewerBio.textContent = profile.bio || "No bio yet.";
+      viewerAvatar.src =
+        getImageUrl(profile.avatar_url) || DEFAULT_AVATAR;
+
+      const bannerUrl = getImageUrl(profile.banner_url);
+
+      viewerBanner.style.backgroundImage = bannerUrl
+        ? `url("${bannerUrl.replace(/["\\]/g, "")}")`
+        : "none";
+
+      viewer.hidden = false;
+      viewer.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    async function loadPublicProfile(userId) {
+      const { data, error } = await supabaseClient
+        .from("public_profiles")
+        .select("id, username, bio, avatar_url, banner_url")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (error) {
+        console.error(error);
+        if (typeof showToast === "function") {
+          showToast("Could not load that profile.");
+        }
+        return;
+      }
+
+      if (!data) {
+        if (typeof showToast === "function") {
+          showToast("Player profile not found.");
+        }
+        return;
+      }
+
+      await showPublicProfile(data);
+    }
+
+    // View own profile
+    viewButton.addEventListener("click", async () => {
+      if (!currentUser) return;
+      await loadPublicProfile(currentUser.id);
+    });
+
+    // Public username search
+    searchForm.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const query = searchInput.value.trim();
+
+      if (query.length < 1) {
+        searchResults.textContent = "Enter a username to search.";
+        return;
+      }
+
+      searchResults.textContent = "Searching...";
+
+      const { data, error } = await supabaseClient
+        .from("public_profiles")
+        .select("id, username, bio, avatar_url")
+        .ilike("username", `%${query}%`)
+        .limit(12);
+
+      if (error) {
+        console.error(error);
+        searchResults.textContent = "Search failed. Please try again.";
+        return;
+      }
+
+      searchResults.replaceChildren();
+
+      if (!data || data.length === 0) {
+        searchResults.textContent = "No players found.";
+        return;
+      }
+
+      data.forEach(profile => {
+        const result = document.createElement("button");
+        result.type = "button";
+        result.className = "mgdl-search-result";
+
+        const avatar = document.createElement("img");
+        avatar.src = getImageUrl(profile.avatar_url) || DEFAULT_AVATAR;
+        avatar.alt = "";
+
+        const info = document.createElement("span");
+
+        const username = document.createElement("strong");
+        username.textContent = profile.username;
+
+        const bio = document.createElement("small");
+        bio.textContent = profile.bio || "No bio yet.";
+
+        info.append(username, bio);
+        result.append(avatar, info);
+
+        result.addEventListener("click", () => {
+          loadPublicProfile(profile.id);
+        });
+
+        searchResults.appendChild(result);
+      });
+    });
+
+    // Edit profile button
     profileButton.addEventListener("click", async () => {
       if (!currentUser) return;
 
@@ -329,6 +520,7 @@
 
       if (!editor.hidden) {
         await loadProfile({ user: currentUser });
+
         editor.scrollIntoView({
           behavior: "smooth",
           block: "center"
@@ -336,7 +528,7 @@
       }
     });
 
-    // Keep profile access synchronized with sign-in/sign-out.
+    // Keep profile buttons synchronized with login state
     supabaseClient.auth.onAuthStateChange((_event, session) => {
       loadProfile(session);
     });
@@ -357,3 +549,4 @@
     startProfileEditor();
   }
 })();
+
