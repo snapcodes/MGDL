@@ -15,9 +15,42 @@ const resultCount = document.getElementById("result-count");
 const emptyState = document.getElementById("empty-state");
 const toast = document.getElementById("toast");
 
-// Direct video links. Add verified showcase URLs here.
+// Direct YouTube video links for ranked levels.
 const levelVideos = {
-  "Firework": "https://www.youtube.com/watch?v=QBe5x2o9v2w"
+  "Firework": "https://www.youtube.com/watch?v=QBe5x2o9v2w",
+  "Unknown": "https://www.youtube.com/watch?v=WqnY045n88E",
+  "Kenos": "https://www.youtube.com/watch?v=TfwUCuC6Z2I",
+  "Zodiac": "https://www.youtube.com/watch?v=HCQK_y8JutU",
+  "BloodLust": "https://www.youtube.com/watch?v=pZlRHWuVDn4",
+  "Shardscapes": "https://www.youtube.com/watch?v=KB-71zV91Fo",
+  "Arctic Lights": "https://www.youtube.com/watch?v=XIr19lJGK-o",
+  "Wasureta": "https://www.youtube.com/watch?v=LDdnsp53PJs",
+  "Sonic Wave": "https://www.youtube.com/watch?v=ovuzGG96P20",
+  "Golden Club": "https://www.youtube.com/watch?v=P1fNbBg7THQ",
+  "Yatagarasu": "https://www.youtube.com/watch?v=ENpcuAjvxcg",
+  "Athanatos": "https://www.youtube.com/watch?v=Hfo5Bshtpqk",
+  "Bloodbath": "https://www.youtube.com/watch?v=pilKVtZafYM",
+  "Cataclysm": "https://www.youtube.com/watch?v=eOuENjRCKzY",
+  "Sweater Weather": "https://www.youtube.com/watch?v=IncATy5L9fo",
+  "Acu": "https://www.youtube.com/watch?v=OJySIle2syE",
+  "Crazy III": "https://www.youtube.com/watch?v=u47noIkjCS8",
+  "Rauchkammer": "https://www.youtube.com/watch?v=1FaArAxopqw",
+  "Supersonic": "https://www.youtube.com/watch?v=G-d7mw6Qcxs",
+  "Deathnote": "https://www.youtube.com/watch?v=asQrt9B3aMo",
+  "Crazy II": "https://www.youtube.com/watch?v=eGPNEaZV6cc",
+  "MikuMikuMikuMiku": "https://www.youtube.com/watch?v=_Appi7XvIzg",
+  "Future Funk": "https://www.youtube.com/watch?v=8gUo6NWiZGE",
+  "Crazy": "https://www.youtube.com/watch?v=g_MP6BENHEs",
+  "Nine Circles": "https://www.youtube.com/watch?v=gAlTQFXzdas",
+  "Troll Madness": "https://www.youtube.com/watch?v=eBgxBEyXBy0",
+  "B": "https://www.youtube.com/watch?v=sOsgFqcveX4",
+  "Theory Of SkriLLex": "https://www.youtube.com/watch?v=A7xp50um2xQ",
+  "Ultraviolence": "https://www.youtube.com/watch?v=tL2X3Fy0BUQ",
+  "Retro Circles": "https://www.youtube.com/watch?v=6wxvgxVh8_Y",
+  "Blast Processed": "https://www.youtube.com/watch?v=D9IkzRHmVNE",
+  "Demon Park": "https://www.youtube.com/watch?v=Pp_Rxn5jltM",
+  "Permafrost Mountain": "https://www.youtube.com/watch?v=wZBuNT6cRVQ",
+  "The Nightmare": "https://www.youtube.com/watch?v=eKNYEKsTATs"
 };
 
 const youtubeSearch = name => levelVideos[name] || null;
@@ -318,3 +351,4 @@ levelSelect.innerHTML = rankedLevels.map(name =>
 
 renderPodium();
 renderList();
+
