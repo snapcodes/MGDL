@@ -7,17 +7,21 @@
   <meta name="theme-color" content="#10070b">
   <meta name="description" content="MGDL - Maldivian Geometry Dash List. A GD list made by Snapped.">
   <title>MGDL | Maldivian Geometry Dash List</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="profile-editor.css">
+  <link rel="stylesheet" href="owner.css">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js" defer></script>
   <script src="profile-editor.js" defer></script>
+  <script src="owner.js" defer></script>
 </head>
+
 <body>
   <div class="ambient ambient-one" aria-hidden="true"></div>
   <div class="ambient ambient-two" aria-hidden="true"></div>
@@ -25,14 +29,20 @@
   <header class="site-header">
     <a class="brand" href="#" aria-label="MGDL home">
       <span class="brand-mark">M</span>
-      <span class="brand-copy"><strong>MGDL</strong><small>MALDIVIAN GEOMETRY DASH LIST</small></span>
+      <span class="brand-copy">
+        <strong>MGDL</strong>
+        <small>MALDIVIAN GEOMETRY DASH LIST</small>
+      </span>
     </a>
+
     <button class="account-button" id="account-open" type="button">Sign in</button>
+
     <nav class="header-nav" aria-label="Main navigation">
       <a class="nav-link active" href="#leaderboard">Leaderboard</a>
       <a class="nav-link" href="#players">Players</a>
       <a class="nav-link" href="#about">About</a>
     </nav>
+
     <span class="edition-pill"><span class="pulse-dot"></span> SNAPS VERSION</span>
   </header>
 
@@ -42,17 +52,22 @@
         <p class="eyebrow"><span></span> THE MALDIVIAN COMMUNITY LIST</p>
         <h1>THE <span>MGDL</span></h1>
         <p class="hero-description">The hardest GD Levels in Maldives, brought to you by Snap, heh. More Stuff Soon.</p>
+
         <div class="hero-actions">
           <a class="button button-primary" href="#leaderboard">View rankings <span aria-hidden="true">↘</span></a>
           <button class="button button-quiet" id="copy-all" type="button">Copy level list <span aria-hidden="true">▣</span></button>
         </div>
       </div>
+
       <div class="hero-art" aria-label="Abstract crimson geometric artwork">
-        <div class="art-ring ring-one"></div><div class="art-ring ring-two"></div>
-        <div class="art-diamond"></div><div class="art-core"></div>
+        <div class="art-ring ring-one"></div>
+        <div class="art-ring ring-two"></div>
+        <div class="art-diamond"></div>
+        <div class="art-core"></div>
         <span class="art-label art-label-top">MD / 001</span>
         <span class="art-label art-label-bottom">Hi Hi!</span>
       </div>
+
       <div class="hero-stats">
         <div><strong id="ranked-count">34</strong><span>RANKED LEVELS</span></div>
         <div><strong>50</strong><span>PLACEMENTS</span></div>
@@ -62,54 +77,101 @@
 
     <section class="leaderboard-section" id="leaderboard">
       <div class="section-heading">
-        <div><p class="eyebrow">OFFICIAL RANKINGS</p><h2>THE <span>LIST</span></h2></div>
+        <div>
+          <p class="eyebrow">OFFICIAL RANKINGS</p>
+          <h2>THE <span>LIST</span></h2>
+        </div>
         <span class="sort-note">HARDEST <b>→</b> EASIEST</span>
       </div>
+
       <div class="list-toolbar">
-        <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search a level..." autocomplete="off" aria-label="Search levels"><kbd>/</kbd></label>
-        <div class="toolbar-meta"><span class="live-indicator"></span><span id="result-count">34 ranked levels</span></div>
+        <label class="search-wrap">
+          <span aria-hidden="true">⌕</span>
+          <input id="search" type="search" placeholder="Search a level..." autocomplete="off" aria-label="Search levels">
+          <kbd>/</kbd>
+        </label>
+        <div class="toolbar-meta">
+          <span class="live-indicator"></span>
+          <span id="result-count">34 ranked levels</span>
+        </div>
       </div>
+
       <div class="podium" id="podium" aria-label="Top three ranked levels"></div>
-      <div class="list-header"><span>RANK</span><span>LEVEL</span><span class="list-status">STATUS</span></div>
+
+      <div class="list-header">
+        <span>RANK</span>
+        <span>LEVEL</span>
+        <span class="list-status">STATUS</span>
+      </div>
+
       <ol class="ranking-list" id="ranking-list" aria-label="MGDL level rankings"></ol>
       <p class="empty-state" id="empty-state" hidden>No levels match that search.</p>
-      <div class="list-footer"><span>MGDL · SNAPS' VERSION</span><span>50 PLACEMENTS RESERVED</span></div>
+
+      <div class="list-footer">
+        <span>MGDL · SNAPS' VERSION</span>
+        <span>50 PLACEMENTS RESERVED</span>
+      </div>
     </section>
 
     <section class="players-section" id="players">
       <div class="section-heading">
-        <div><p class="eyebrow">COMMUNITY RANKINGS</p><h2>THE <span>PLAYERS</span></h2></div>
+        <div>
+          <p class="eyebrow">COMMUNITY RANKINGS</p>
+          <h2>THE <span>PLAYERS</span></h2>
+        </div>
         <span class="sort-note">ELO <b>·</b> MV POINTS</span>
       </div>
+
       <div class="players-toolbar">
         <p class="players-intro">Player rankings will appear here once approved records are submitted.</p>
         <button class="button button-primary" id="submit-record-open" type="button">Submit a record</button>
       </div>
+
       <div class="player-table-wrap">
-        <div class="player-table-head"><span>PLAYER</span><span>ELO</span><span>MV POINTS</span></div>
-        <div id="players-list" class="players-list"><p class="empty-state">No approved player records yet.</p></div>
+        <div class="player-table-head">
+          <span>PLAYER</span>
+          <span>ELO</span>
+          <span>MV POINTS</span>
+        </div>
+        <div id="players-list" class="players-list">
+          <p class="empty-state">No approved player records yet.</p>
+        </div>
       </div>
     </section>
 
     <section class="about-section" id="about">
       <div class="about-symbol">MG<span>DL</span></div>
-      <div><p class="eyebrow">ABOUT THIS PROJECT</p><h2>MADE FOR THE <span>MALDIVIAN</span> GD COMMUNITY.</h2>
-      <p>MGDL stands for Maldivian Geometry Dash List. This is Snap's version of a hardest-to-easiest level ranking list. The first 34 placements are populated; the remaining 16 are reserved for future additions.</p></div>
+      <div>
+        <p class="eyebrow">ABOUT THIS PROJECT</p>
+        <h2>MADE FOR THE <span>MALDIVIAN</span> GD COMMUNITY.</h2>
+        <p>MGDL stands for Maldivian Geometry Dash List. This is Snap's version of a hardest-to-easiest level ranking list. The first 34 placements are populated; the remaining 16 are reserved for future additions.</p>
+      </div>
     </section>
   </main>
 
-  <footer class="site-footer"><a class="footer-brand" href="#">MGDL<span> / V4.0</span></a><span>UNOFFICIAL COMMUNITY PROJECT · NOT AFFILIATED WITH ROBTOP GAMES</span><a href="#leaderboard">BACK TO TOP ↑</a></footer>
+  <footer class="site-footer">
+    <a class="footer-brand" href="#">MGDL<span> / V4.0</span></a>
+    <span>UNOFFICIAL COMMUNITY PROJECT · NOT AFFILIATED WITH ROBTOP GAMES</span>
+    <a href="#leaderboard">BACK TO TOP ↑</a>
+  </footer>
 
   <div class="modal-backdrop" id="auth-modal" hidden>
     <section class="account-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title">
       <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
-      <p class="eyebrow">MGDL ACCOUNT</p><h2 id="auth-title">SIGN IN</h2>
-      <div class="auth-tabs"><button class="auth-tab active" data-auth-mode="signin" type="button">Sign in</button><button class="auth-tab" data-auth-mode="signup" type="button">Create account</button></div>
+      <p class="eyebrow">MGDL ACCOUNT</p>
+      <h2 id="auth-title">SIGN IN</h2>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-auth-mode="signin" type="button">Sign in</button>
+        <button class="auth-tab" data-auth-mode="signup" type="button">Create account</button>
+      </div>
+
       <form id="auth-form">
         <label>Email<input id="auth-email" type="email" autocomplete="email" required></label>
         <label>Password<input id="auth-password" type="password" autocomplete="current-password" minlength="8" required></label>
         <button class="button button-primary modal-submit" type="submit">Continue with email</button>
       </form>
+
       <button class="google-button" id="google-signin" type="button">Continue with Google</button>
       <p class="modal-note">New accounts must verify their email before signing in.</p>
     </section>
@@ -118,13 +180,16 @@
   <div class="modal-backdrop" id="record-modal" hidden>
     <section class="account-modal" role="dialog" aria-modal="true" aria-labelledby="record-title">
       <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
-      <p class="eyebrow">PLAYER SUBMISSION</p><h2 id="record-title">SUBMIT A RECORD</h2>
+      <p class="eyebrow">PLAYER SUBMISSION</p>
+      <h2 id="record-title">SUBMIT A RECORD</h2>
+
       <form id="record-form">
         <label>Level<select id="record-level" required></select></label>
         <label>Video proof URL<input id="record-video" type="url" placeholder="https://youtube.com/..." required></label>
         <label>Notes<textarea id="record-notes" rows="3" placeholder="Optional details"></textarea></label>
         <button class="button button-primary modal-submit" type="submit">Send for approval</button>
       </form>
+
       <p class="modal-note">Submissions require a signed-in account and developer approval before rewards are applied.</p>
     </section>
   </div>
@@ -132,6 +197,4 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
-
-
 
