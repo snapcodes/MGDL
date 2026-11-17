@@ -1,0 +1,164 @@
+
+/* MGDL OWNER PANEL */
+
+.mgdl-owner-panel {
+  width: min(850px, calc(100% - 30px));
+  box-sizing: border-box;
+  margin: 35px auto;
+  padding: 24px;
+  color: #fff;
+  background: #211018;
+  border: 1px solid #9e294b;
+  border-radius: 16px;
+  box-shadow: 0 12px 35px rgba(0,0,0,.3);
+}
+
+.mgdl-owner-panel[hidden] {
+  display: none;
+}
+
+.mgdl-owner-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mgdl-owner-heading h2 {
+  margin: 0;
+  color: #ff4566;
+}
+
+.mgdl-owner-heading p {
+  margin: 5px 0;
+  color: #d1aab5;
+}
+
+.mgdl-owner-hammer {
+  font-size: 34px;
+}
+
+.mgdl-owner-tabs {
+  display: flex;
+  gap: 9px;
+  margin: 22px 0;
+}
+
+.mgdl-owner-tabs button,
+.mgdl-owner-content button {
+  padding: 11px 15px;
+  color: #fff;
+  background: #451629;
+  border: 1px solid #9e294b;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mgdl-owner-tabs button.active,
+.mgdl-owner-content button[type="submit"] {
+  background: #c51e48;
+}
+
+.mgdl-owner-content[hidden] {
+  display: none;
+}
+
+.mgdl-owner-content h3 {
+  margin: 20px 0 12px;
+  color: #ff718b;
+}
+
+.mgdl-owner-content label {
+  display: block;
+  margin: 12px 0 6px;
+  color: #f0cbd5;
+  font-weight: 700;
+}
+
+.mgdl-owner-content input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  color: #fff;
+  background: #160a10;
+  border: 1px solid #84344d;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.mgdl-owner-content form button {
+  margin-top: 14px;
+}
+
+.mgdl-owner-level {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  padding: 12px;
+  background: #30121f;
+  border: 1px solid #63263b;
+  border-radius: 9px;
+}
+
+.mgdl-owner-level span {
+  overflow-wrap: anywhere;
+}
+
+.mgdl-owner-level button {
+  flex-shrink: 0;
+  background: #85152f;
+}
+
+#mgdl-owner-player-results {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.mgdl-owner-player-result {
+  text-align: left;
+}
+
+.mgdl-owner-status {
+  min-height: 20px;
+  color: #8ee6a5;
+  overflow-wrap: anywhere;
+}
+
+.mgdl-owner-status.error {
+  color: #ff8295;
+}
+
+/* Red hammer next to Snapped's profile name */
+
+.mgdl-viewer-username {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.mgdl-owner-badge {
+  display: inline-block;
+  margin-left: 9px;
+  color: #ff304f;
+  font-size: 23px;
+  vertical-align: middle;
+  cursor: help;
+  filter: saturate(1.5);
+}
+
+.mgdl-owner-badge[hidden] {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .mgdl-owner-panel {
+    padding: 16px;
+  }
+
+  .mgdl-owner-level {
+    align-items: flex-start;
+  }
+}
