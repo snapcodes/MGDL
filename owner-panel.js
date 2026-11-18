@@ -16,9 +16,17 @@
 
     let currentUser = null;
     let selectedPlayer = null;
+    let rankedLevelNames = [];
+
+    const hammerSvg = `
+      <svg class="mgdl-hammer-icon" viewBox="0 0 24 24"
+           xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <path d="M14.2 2.8 21.2 9.8 17.8 13.2 14.8 10.2 8.1 16.9
+                 10.9 19.7 7.7 22.9 1.1 16.3 4.3 13.1 7.1 15.9
+                 13.8 9.2 10.8 6.2 14.2 2.8Z"/>
+      </svg>`;
 
     // ---------- OWNER BADGE ----------
-
     function updateOwnerBadge() {
       const viewer = document.querySelector(".mgdl-profile-viewer");
       if (!viewer) return;
@@ -26,15 +34,13 @@
       const username = viewer.querySelector(".mgdl-viewer-username");
       if (!username) return;
 
-      const isOwner =
-        username.textContent.trim().toLowerCase() === "snapped";
-
+      const isOwner = username.textContent.trim().toLowerCase() === "snapped";
       let badge = viewer.querySelector(".mgdl-owner-badge");
 
       if (isOwner && !badge) {
         badge = document.createElement("span");
         badge.className = "mgdl-owner-badge";
-        badge.textContent = "🔨";
+        badge.innerHTML = hammerSvg;
         badge.title = "Owner";
         badge.setAttribute("aria-label", "Owner");
         username.insertAdjacentElement("afterend", badge);
@@ -44,21 +50,21 @@
     }
 
     const viewerObserver = new MutationObserver(updateOwnerBadge);
-
     viewerObserver.observe(document.body, {
       childList: true,
-      subtree: true
+      subtree: true,
+      characterData: true
     });
+    updateOwnerBadge();
 
     // ---------- PANEL ----------
-
     const panel = document.createElement("section");
     panel.className = "mgdl-owner-panel";
     panel.hidden = true;
 
     panel.innerHTML = `
       <div class="mgdl-owner-heading">
-        <span class="mgdl-owner-hammer">🔨</span>
+        <span class="mgdl-owner-hammer">${hammerSvg}</span>
         <div>
           <h2>OWNER CONTROL PANEL</h2>
           <p>MGDL administration</p>
@@ -66,17 +72,12 @@
       </div>
 
       <div class="mgdl-owner-tabs">
-        <button type="button" data-tab="levels" class="active">
-          LEVELS
-        </button>
-        <button type="button" data-tab="players">
-          PLAYERS
-        </button>
+        <button type="button" data-tab="levels" class="active">LEVELS</button>
+        <button type="button" data-tab="players">PLAYERS</button>
       </div>
 
       <div class="mgdl-owner-content" data-content="levels">
         <h3>Ranked level management</h3>
-
         <form id="mgdl-owner-add-level">
           <label for="mgdl-new-level">Level name</label>
           <input id="mgdl-new-level" maxlength="80"
@@ -86,9 +87,12 @@
           <input id="mgdl-new-points" type="number"
                  min="0" max="100000" value="10" required>
 
+          <label for="mgdl-new-video">YouTube video URL (optional)</label>
+          <input id="mgdl-new-video" type="url"
+                 placeholder="https://www.youtube.com/watch?v=...">
+
           <button type="submit">ADD RANKED LEVEL</button>
         </form>
-
         <p class="mgdl-owner-status" id="mgdl-level-status"
            aria-live="polite"></p>
 
@@ -98,10 +102,7 @@
 
       <div class="mgdl-owner-content" data-content="players" hidden>
         <h3>Player management</h3>
-
-        <label for="mgdl-owner-player-search">
-          Find a registered player
-        </label>
+        <label for="mgdl-owner-player-search">Find a registered player</label>
         <input id="mgdl-owner-player-search"
                placeholder="Search username..." maxlength="20">
 
@@ -110,20 +111,23 @@
         <form id="mgdl-owner-player-form" hidden>
           <h3 id="mgdl-owner-selected-name"></h3>
 
-          <label for="mgdl-owner-elo">ELO</label>
-          <input id="mgdl-owner-elo" type="number"
-                 min="0" max="100000000" required>
+          <label for="mgdl-owner-hardest">Hardest completed level</label>
+          <select id="mgdl-owner-hardest">
+            <option value="">No hardest selected</option>
+          </select>
 
           <label for="mgdl-owner-mv">MV points</label>
           <input id="mgdl-owner-mv" type="number"
                  min="0" max="100000000" required>
 
-          <button type="submit">SAVE PLAYER STATS</button>
-          <button type="button" id="mgdl-owner-cancel">
-            CANCEL
-          </button>
-        </form>
+          <p class="mgdl-owner-help">
+            MV points determine leaderboard placement. Hardest is display-only
+            and does not change a player's MV or rank.
+          </p>
 
+          <button type="submit">SAVE PLAYER STATS</button>
+          <button type="button" id="mgdl-owner-cancel">CANCEL</button>
+        </form>
         <p class="mgdl-owner-status" id="mgdl-player-status"
            aria-live="polite"></p>
       </div>
@@ -136,44 +140,84 @@
     const playerStatus = panel.querySelector("#mgdl-player-status");
     const playerResults = panel.querySelector("#mgdl-owner-player-results");
     const playerForm = panel.querySelector("#mgdl-owner-player-form");
+    const hardestSelect = panel.querySelector("#mgdl-owner-hardest");
 
     function status(element, message, error = false) {
       element.textContent = message;
       element.classList.toggle("error", error);
     }
 
-    // ---------- TABS ----------
+    function safeVideoUrl(value) {
+      if (!value) return null;
+      try {
+        const parsed = new URL(value);
+        return parsed.protocol === "https:" ? parsed.href : null;
+      } catch {
+        return null;
+      }
+    }
 
+    // ---------- TABS ----------
     panel.querySelectorAll("[data-tab]").forEach(button => {
       button.addEventListener("click", () => {
         panel.querySelectorAll("[data-tab]").forEach(tab => {
           tab.classList.toggle("active", tab === button);
         });
-
         panel.querySelectorAll("[data-content]").forEach(content => {
           content.hidden = content.dataset.content !== button.dataset.tab;
         });
       });
     });
 
-    // ---------- LEVEL MANAGEMENT ----------
+    // ---------- RANKED LEVELS ----------
+    async function fetchLevels() {
+      const { data, error } = await supabaseClient
+        .from("ranked_levels")
+        .select("id, rank, name, mv_points, video_url")
+        .order("rank", { ascending: true });
+
+      if (error) throw error;
+      rankedLevelNames = (data || []).map(level => level.name);
+      refreshHardestOptions();
+      return data || [];
+    }
+
+    function refreshHardestOptions(selectedValue = hardestSelect.value) {
+      hardestSelect.replaceChildren();
+
+      const emptyOption = document.createElement("option");
+      emptyOption.value = "";
+      emptyOption.textContent = "No hardest selected";
+      hardestSelect.append(emptyOption);
+
+      rankedLevelNames.forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        hardestSelect.append(option);
+      });
+
+      if (selectedValue && rankedLevelNames.includes(selectedValue)) {
+        hardestSelect.value = selectedValue;
+      } else {
+        hardestSelect.value = "";
+      }
+    }
 
     async function loadLevels() {
       levelList.textContent = "Loading levels...";
 
-      const { data, error } = await supabaseClient
-        .from("ranked_levels")
-        .select("id, rank, name, mv_points")
-        .order("rank");
-
-      if (error) {
+      let data;
+      try {
+        data = await fetchLevels();
+      } catch (error) {
         levelList.textContent = "Could not load levels: " + error.message;
         return;
       }
 
       levelList.replaceChildren();
 
-      if (!data || !data.length) {
+      if (!data.length) {
         levelList.textContent = "No ranked levels yet.";
         return;
       }
@@ -184,24 +228,23 @@
 
         const info = document.createElement("span");
         info.textContent =
-          "#" + level.rank + " · " + level.name +
-          " · " + level.mv_points + " MV";
+          "#" + level.rank + " · " + level.name + " · " + level.mv_points + " MV";
 
         const remove = document.createElement("button");
         remove.type = "button";
         remove.textContent = "REMOVE";
         remove.addEventListener("click", async () => {
-          if (!confirm("Remove " + level.name + " from the ranked list?")) {
-            return;
-          }
+          if (!confirm("Remove " + level.name + " from the ranked list?")) return;
 
-          const { error } = await supabaseClient
-            .from("ranked_levels")
-            .delete()
-            .eq("id", level.id);
+          remove.disabled = true;
+          const { error } = await supabaseClient.rpc(
+            "owner_remove_ranked_level_v2",
+            { target_level_id: level.id }
+          );
 
           if (error) {
             status(levelStatus, error.message, true);
+            remove.disabled = false;
             return;
           }
 
@@ -218,8 +261,8 @@
     async function syncPublicLevels() {
       const { data, error } = await supabaseClient
         .from("ranked_levels")
-        .select("rank, name, mv_points")
-        .order("rank");
+        .select("rank, name, mv_points, video_url")
+        .order("rank", { ascending: true });
 
       if (error) {
         console.error("Could not refresh public levels:", error);
@@ -235,39 +278,34 @@
       .addEventListener("submit", async event => {
         event.preventDefault();
 
-        const name = panel.querySelector("#mgdl-new-level")
-          .value.trim();
+        const name = panel.querySelector("#mgdl-new-level").value.trim();
+        const points = Number(panel.querySelector("#mgdl-new-points").value);
+        const rawVideoUrl = panel.querySelector("#mgdl-new-video").value.trim();
+        const videoUrl = safeVideoUrl(rawVideoUrl);
 
-        const points = Number(
-          panel.querySelector("#mgdl-new-points").value
-        );
-
-        if (!name || !Number.isInteger(points) ||
-            points < 0 || points > 100000) {
+        if (!name || !Number.isInteger(points) || points < 0 || points > 100000) {
           status(levelStatus, "Enter a valid name and MV value.", true);
           return;
         }
 
-        const { data: existing, error: readError } = await supabaseClient
-          .from("ranked_levels")
-          .select("rank")
-          .order("rank", { ascending: false })
-          .limit(1);
-
-        if (readError) {
-          status(levelStatus, readError.message, true);
+        if (rawVideoUrl && !videoUrl) {
+          status(levelStatus, "Enter a valid HTTPS video URL.", true);
           return;
         }
 
-        const nextRank = existing?.length ? existing[0].rank + 1 : 1;
+        const submit = event.currentTarget.querySelector('button[type="submit"]');
+        submit.disabled = true;
 
-        const { error } = await supabaseClient
-          .from("ranked_levels")
-          .insert({
-            rank: nextRank,
-            name,
-            mv_points: points
-          });
+        const { error } = await supabaseClient.rpc(
+          "owner_add_ranked_level_v2",
+          {
+            new_name: name,
+            new_mv_points: points,
+            new_video_url: videoUrl
+          }
+        );
+
+        submit.disabled = false;
 
         if (error) {
           status(levelStatus, error.message, true);
@@ -275,25 +313,23 @@
         }
 
         panel.querySelector("#mgdl-new-level").value = "";
-        status(levelStatus, name + " added successfully.");
-
+        panel.querySelector("#mgdl-new-video").value = "";
+        status(levelStatus, name + " added. Rankings reordered by MV points.");
         await loadLevels();
         await syncPublicLevels();
       });
 
     // ---------- PLAYER MANAGEMENT ----------
-
     let searchTimer = null;
 
     async function searchPlayers(query) {
       playerResults.replaceChildren();
-
       if (!query.trim()) return;
 
       playerResults.textContent = "Searching...";
 
       const { data, error } = await supabaseClient.rpc(
-        "owner_search_players",
+        "owner_search_players_v2",
         { search_text: query.trim() }
       );
 
@@ -313,19 +349,19 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = "mgdl-owner-player-result";
-
         button.textContent =
-          player.username + " · ELO " + player.elo +
+          player.username + " · Hardest: " + (player.hardest || "—") +
           " · " + player.mv_points + " MV";
 
         button.addEventListener("click", () => {
           selectedPlayer = player;
 
-          panel.querySelector("#mgdl-owner-selected-name")
-            .textContent = "Editing " + player.username;
+          panel.querySelector("#mgdl-owner-selected-name").textContent =
+            "Editing " + player.username;
 
-          panel.querySelector("#mgdl-owner-elo").value = player.elo;
-          panel.querySelector("#mgdl-owner-mv").value = player.mv_points;
+          refreshHardestOptions(player.hardest || "");
+          panel.querySelector("#mgdl-owner-mv").value =
+            Number(player.mv_points) || 0;
 
           playerForm.hidden = false;
           status(playerStatus, "");
@@ -338,7 +374,6 @@
     panel.querySelector("#mgdl-owner-player-search")
       .addEventListener("input", event => {
         clearTimeout(searchTimer);
-
         const query = event.target.value;
         searchTimer = setTimeout(() => searchPlayers(query), 250);
       });
@@ -351,39 +386,44 @@
 
     playerForm.addEventListener("submit", async event => {
       event.preventDefault();
-
       if (!selectedPlayer) return;
 
-      const elo = Number(panel.querySelector("#mgdl-owner-elo").value);
+      const hardest = hardestSelect.value || null;
       const mv = Number(panel.querySelector("#mgdl-owner-mv").value);
 
-      if (!Number.isSafeInteger(elo) || !Number.isSafeInteger(mv) ||
-          elo < 0 || mv < 0) {
-        status(playerStatus, "Enter valid non-negative numbers.", true);
+      if (!Number.isSafeInteger(mv) || mv < 0) {
+        status(playerStatus, "Enter a valid non-negative MV value.", true);
         return;
       }
 
+      if (hardest && !rankedLevelNames.includes(hardest)) {
+        status(playerStatus, "Choose a level from the current ranked list.", true);
+        return;
+      }
+
+      const submit = playerForm.querySelector('button[type="submit"]');
+      submit.disabled = true;
+
       const { error } = await supabaseClient.rpc(
-        "owner_set_player_stats",
+        "owner_set_player_stats_v2",
         {
           target_player_id: selectedPlayer.id,
-          new_elo: elo,
+          new_hardest: hardest,
           new_mv_points: mv
         }
       );
+
+      submit.disabled = false;
 
       if (error) {
         status(playerStatus, error.message, true);
         return;
       }
 
-      status(playerStatus, "Stats saved for " + selectedPlayer.username + ".");
-
-      selectedPlayer.elo = elo;
-      selectedPlayer.mv_points = mv;
-
-      playerForm.hidden = true;
+      const savedUsername = selectedPlayer.username;
+      status(playerStatus, "Stats saved for " + savedUsername + ".");
       selectedPlayer = null;
+      playerForm.hidden = true;
 
       await searchPlayers(
         panel.querySelector("#mgdl-owner-player-search").value
@@ -391,7 +431,6 @@
     });
 
     // ---------- AUTHORIZATION ----------
-
     async function checkOwner(session) {
       currentUser = session?.user || null;
       panel.hidden = true;
