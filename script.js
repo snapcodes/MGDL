@@ -49,10 +49,20 @@ const levelVideos = {
   "Blast Processed": "https://www.youtube.com/watch?v=D9IkzRHmVNE",
   "Demon Park": "https://www.youtube.com/watch?v=Pp_Rxn5jltM",
   "Permafrost Mountain": "https://www.youtube.com/watch?v=wZBuNT6cRVQ",
-  "The Nightmare": "https://www.youtube.com/watch?v=eKNYEKsTATs"
+  "The Nightmare": "https://www.youtube.com/watch?v=zf3z4mxgOBs"
 };
 
 const youtubeSearch = name => levelVideos[name] || null;
+
+function safeVideoUrl(value) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" ? url.href : null;
+  } catch {
+    return null;
+  }
+}
 
 const MGDL_levelPoints = new Map();
 
@@ -93,7 +103,7 @@ function renderList(query = "") {
       item.rank === 2 ? "top-two" :
       item.rank === 3 ? "top-three" : "";
 
-    const videoUrl = item.reserved ? null : youtubeSearch(item.name);
+    const videoUrl = item.reserved ? null : safeVideoUrl(youtubeSearch(item.name));
 
     const content = item.reserved
       ? `<span class="rank-name">Open placement</span>`
@@ -194,6 +204,10 @@ function MGDL_setRankedLevels(levels) {
 
   sortedLevels.forEach(level => {
     MGDL_levelPoints.set(level.name, Number(level.mv_points));
+    if (level.video_url) {
+      const safeUrl = safeVideoUrl(level.video_url);
+      if (safeUrl) levelVideos[level.name] = safeUrl;
+    }
   });
 
   document.getElementById("ranked-count").textContent = rankedLevels.length;
@@ -215,7 +229,7 @@ window.MGDL_setRankedLevels = MGDL_setRankedLevels;
 async function MGDL_reloadRankedLevels() {
   const { data, error } = await supabaseClient
     .from("ranked_levels")
-    .select("rank, name, mv_points")
+    .select("rank, name, mv_points, video_url")
     .order("rank", { ascending: true });
 
   if (error) {
