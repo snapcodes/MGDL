@@ -177,29 +177,22 @@ const supabaseClient = window.supabase.createClient(
 
 /* DATABASE RANKING INTEGRATION */
 
-async function MGDL_reloadRankedLevels() {
-  const { data, error } = await supabaseClient
-    .from("ranked_levels")
-    .select("rank, name, mv_points")
-    .order("rank", { ascending: true });
+function MGDL_setRankedLevels(levels) {
+  if (!Array.isArray(levels)) return;
 
-  if (error) {
-    console.error("MGDL ranked levels:", error.message);
-    showToast("Could not load database rankings.");
-    return;
-  }
-
-  if (!Array.isArray(data)) return;
+  const sortedLevels = [...levels].sort(
+    (a, b) => Number(a.rank) - Number(b.rank)
+  );
 
   rankedLevels.splice(
     0,
     rankedLevels.length,
-    ...data.map(level => level.name)
+    ...sortedLevels.map(level => level.name)
   );
 
   MGDL_levelPoints.clear();
 
-  data.forEach(level => {
+  sortedLevels.forEach(level => {
     MGDL_levelPoints.set(level.name, Number(level.mv_points));
   });
 
@@ -215,6 +208,25 @@ async function MGDL_reloadRankedLevels() {
 
   renderPodium();
   renderList(search.value);
+}
+
+window.MGDL_setRankedLevels = MGDL_setRankedLevels;
+
+async function MGDL_reloadRankedLevels() {
+  const { data, error } = await supabaseClient
+    .from("ranked_levels")
+    .select("rank, name, mv_points")
+    .order("rank", { ascending: true });
+
+  if (error) {
+    console.error("MGDL ranked levels:", error.message);
+    showToast("Could not load database rankings.");
+    return;
+  }
+
+  if (!Array.isArray(data)) return;
+
+  MGDL_setRankedLevels(data);
 }
 
 window.MGDL_reloadRankedLevels = MGDL_reloadRankedLevels;
